@@ -1,44 +1,273 @@
-# AI Soulmate (AI 心靈伴侶)
+# AI Soulmate 項目會議紀錄
 
-## 💎 Product Vision
-A luxury, B2B smart home product designed for high-end bathrooms.
-*   **Core Value:** A "Soulmate" in the ceiling that cares for your mental wellness through **Spoken Wisdom**.
-*   **Target Audience:** High-net-worth individuals, luxury property developers.
-*   **USP (Unique Selling Point):** 
-    *   **Zero Friction:** One-button activation.
-    *   **Privacy First:** No camera, no voice recognition, "Dumb Mode" switch.
-    *   **Content First:** Curated "Chicken Soup" & Book Summaries (Primary), supported by high-quality music (Secondary).
+> 建立日期：2026-03-25  
+> 最後更新：2026-03-25  
+> 負責人：蠢（Joe）/ 大波蓮
 
-## 🛁 User Experience (The "Morning Routine")
-1.  **Trigger:** User enters bathroom or presses the **Smart Knob**.
-2.  **Greeting:** "Good morning Joe! The weather is [Weather] today. How are you feeling?"
-3.  **Interaction:** User replies (Good / Bad / So-so) or rotates knob.
-4.  **Content Delivery (Prioritized):**
-    *   **Primary (The "Soul"):** 
-        *   **Motivational Stories:** (e.g., Tao Jie, Sammy Leung, Joe's Voice).
-        *   **Book Summaries:** 5-minute essence of bestsellers.
-    *   **Secondary (The "Vibe"):** 
-        *   **Music:** Lo-fi, Classical, Jazz (Royalty-free).
-        *   **Sound Effects:** Nature sounds (rain, forest).
-        *   **Mindfulness:** Guided meditation.
-5.  **Exit:** AI goes silent/standby.
+---
 
-## 🛠 Hardware Specs
-*   **Core:** **ESP32-S3** ("XiaoZhi" / 小智 board).
-*   **Interface:** **Smart Rotary Knob** with integrated LED screen (Ref: M5Stack Dial).
-    *   *Click:* Wake/Confirm.
-    *   *Rotate:* Volume/Selection.
-    *   *Long Press:* Switch Mode (AI <-> Bluetooth).
-*   **Audio:** High-quality I2S Amp connected to ceiling speakers (Bose/KEF).
-*   **Connectivity:** WiFi (to Server) + Bluetooth (A2DP Sink).
+## 產品定位
 
-## ☁️ Backend Architecture (Hetzner Server)
-*   **STT:** OpenAI Whisper (Voice to Text).
-*   **LLM:** Lightweight logic (or ChatGPT) with system prompt: *Warm, empathetic, no complex facts.*
-*   **TTS:** Microsoft Edge TTS (Cantonese - Xiaoxiao/Yunxi).
-*   **Content Engine:** `yt-dlp` to fetch YouTube audio (motivational/books) -> Convert to MP3.
+| 項目 | 內容 |
+|------|------|
+| **產品名稱** | AI Soulmate（浴室身心靈中樞） |
+| **定位** | 豪華智能家居產品（B2B） |
+| **目標客戶** | 高資產人士、豪華住宅發展商 |
+| **口號** | We engineer the soul of a home. |
+| **專利狀態** | Patent Pending |
 
-## 📅 Roadmap
-1.  **Phase 1 (Server):** Setup API for STT/TTS and Content Library (YouTube downloader).
-2.  **Phase 2 (Hardware):** Flash ESP32 with initial firmware to test WiFi & Audio.
-3.  **Phase 3 (Integration):** Connect Hardware Knob to Server logic.
+---
+
+## 核心哲學
+
+**「真正的奢華，不是堆砌，而是留白。」**
+
+現今智能家居往往是在「倒垃圾」——將新聞、股票、資訊焦慮帶入浴室。
+AI Soulmate 反其道而行：
+
+- **使命**：幫住戶「洗滌繁囂」
+- **定位**：將浴室還原為純粹的「心靈避難所」(Sanctuary)
+- **核心價值**：賣「活在當下的權利」與「幸福感」(Well-being)
+
+---
+
+## 核心內容四支柱（精唔要多）
+
+1. **歌**（Music）：Lo-fi、Classical、Jazz（Royalty-free）
+2. **音效**（Sound Effects）：大自然聲音（雨聲、森林）
+3. **心靈雞湯**（Motivational Stories）：雞湯語錄
+4. **讀好書**（Book Summaries）：5分鐘書籍精華
+
+> 主軸是「身心靈」、「活在當下」、「幸福感」
+
+---
+
+## 硬件方案
+
+### 架構：分體式（Wireless Split Design）
+
+```
+天花主機（Master）
+  - 隱藏於天花板
+  - 連接 220V 電 + 喇叭（Bose/KEF）
+  - 負責：運算、WiFi、藍牙、音頻放大
+
+牆身旋鈕（Remote）
+  - 86 標準面板
+  - 無線設計（BLE / ESP-NOW）
+  - 靠電池（目標 2 年以上）或動能發電
+  - 零布線、零拉線
+```
+
+### 面板設計：The One Knob（極致單旋鈕）
+
+- 全個 86 面板只有一個**懸浮光環旋鈕**
+- 無屏幕、無按鍵、無文字
+- 物料建議：**黑鏡浮光**（黑色鋼化玻璃 + 鋁合金旋鈕）
+
+### 操作方式（Gestures）
+
+| 動作 | 功能 |
+|------|------|
+| **轉動** | 音量（大/小） |
+| **短按** | 喚醒 AI / 播放暫停 |
+| **長按（3秒）** | 切換 Mode（AI ↔ 藍牙） |
+
+### 藍牙特點（自家研發）
+
+- **自訂名稱**：每部機跟隨 [座數-單位] 命名（如 T1-8A Soulmate），非generic JBL xxx
+- **防誤連**：需實體旋鈕授權配對
+
+### 安裝優點
+
+- 節省 80% 安裝工時
+- 完美保護名貴石材牆身
+
+---
+
+## 雙模式架構
+
+### Mode A：藍牙模式（Safety Net）
+
+- 長按旋鈕 → 變回發燒級藍牙喇叭
+- **絕對靜音承諾**：AI 徹底休眠，絕不主動發聲
+- 斷網可用，100% 穩定
+
+### Mode B：AI 模式（Innovation）
+
+- 一鍵喚醒，智能預判
+- 嚴選四大內容
+- **本地部署**：Server 安裝於管理處，數據不出屋苑
+
+---
+
+## 配套 Setup（WiFi Provisioning + 設定頁）
+
+首次開機時，用手機連入 ESP32 的 WiFi，彈出 Web Setup Page：
+
+1. 輸入 WiFi SSID / Password
+2. 選擇語言：廣東話 / English / 普通話
+3. 選擇預設模式：AI Mode / Bluetooth Mode
+4. Save & Reboot
+
+---
+
+## 技術架構
+
+### 流程
+
+```
+語音輸入（麥克風）
+  → STT：OpenAI Whisper（雲端）
+  → 意圖分流
+      → 簡單命令 → 本地即時執行
+      → 複雜對話 → LLM
+  → LLM：ChatGPT / 輕量邏輯
+  → TTS：Microsoft Edge TTS（廣東話 - Xiaoxiao/Yunxi）
+  → 藍牙 A2DP → 天花喇叭
+```
+
+### Server
+
+| 項目 | 內容 |
+|------|------|
+| **供應商** | Hetzner（德國） |
+| **規格** | 4 vCPU / 8GB RAM / 150GB |
+| **已啟用服務** | 大波蓮（OpenClaw） |
+
+### 技術風險及對應
+
+| 風險 | 對應方案 |
+|------|---------|
+| 延遲過高 | 意圖分流 + TTS 預先快取 |
+| 版權問題 | Podcast RSS / Spotify API / 預授權內容 |
+| CDNs 速度 | Cloudflare（待落實） |
+| Email 派信 | Mailgun / SendGrid SMTP |
+| 半夜 AI 突然發聲 | 啞巴模式 / Safety Lock |
+| 濕手操作 | 盲操作設計 |
+| 旋鈕耐久性 | 機械式，無電子Touch |
+
+---
+
+## 營銷策略
+
+### 對象：地產發展商 PM
+
+**核心訊息**：「為住戶提升**幸福感**」
+
+### PM 痛點共鳴
+
+- 硬件同質化：潔具電器已「頂配」，難以創新
+- 智能家居兩難：太複雜易壞投訴，太簡單無賣點
+- 時代需求轉變：新一代買家追求身心靈健康
+
+### 破局關鍵字
+
+- **綠洲 (Oasis)**：「為住戶打造心靈綠洲」
+- **安頓**：「為都市心靈安頓」
+- **洗滌**：「洗滌全日繁囂」
+- **幸福感**：ESG 形象提升
+
+### 倒垃圾理論
+
+> 其他智能家居在「倒垃圾」（塞資訊焦慮入浴室）  
+> AI Soulmate 在「開新境」（還原純粹當下）
+
+### Gimmick：聯乘名人
+
+- 市場推廣預算資助
+- 聯乘星級名嘴（如 Bob Lam / 森美）
+- 錄製樓盤專屬晨早電台
+- 每朝由明星聲音導航
+
+---
+
+## 商業模式
+
+| 項目 | 內容 |
+|------|------|
+| **模式** | 一次性買斷 |
+| **包含** | 硬件 + 軟件 + 永久基本內容授權 |
+| **無隱藏月費** | 不增加管理費負擔 |
+| **付款方** | 市場部預算 |
+
+---
+
+## 發展階段
+
+```
+Phase 1：Server 準備
+  → 設定 API（STT/TTS）
+  → 建立內容 Library
+
+Phase 2：硬件測試
+  → ESP32 燒錄初始韌體
+  → 測試 WiFi 及音頻
+
+Phase 3：系統整合
+  → 旋鈕硬件連接 Server 邏輯
+```
+
+---
+
+## Server 配套工具
+
+> 以下工具可在 Hetzner Server 上同時運行
+
+| 工具 | 功能 |
+|------|------|
+| **n8n** | 自動化流程（如 YouTube 內容監控） |
+| **Immich** | 取代 Google Photos（人面識別） |
+| **VPN (WireGuard)** | 大陸翻牆、加密上網 |
+
+---
+
+## 待跟進事項
+
+| 項目 | 詳情 | 優先級 |
+|------|------|--------|
+| **Zeabur 自動續約** | 2026 年 3 月 19 日（~$10 USD） | ⚠️ 高 |
+| **信用卡確認** | 需在 3 月 12 日前確認 | ⚠️ 高 |
+| **樣板到貨** | ESP32 + 旋鈕 Sample | 待定 |
+| **Demo 錄音** | 測試「早晨 Joe 哥哥」 | 待定 |
+
+---
+
+## 文案終稿（可直接使用）
+
+---
+
+**【項目代號：AI Soulmate】**
+
+**定義未來豪宅標準：全港首創「浴室身心靈中樞」**
+
+---
+
+**1. 核心哲學：為生活做減法**
+
+「真正的奢華，不是堆砌，而是留白。」
+
+現今的智能家居往往是在「倒垃圾」——將新聞、股票、資訊焦慮帶入浴室。
+我們反其道而行。AI Soulmate 的使命是幫住戶「洗滌繁囂」，將浴室還原為一個純粹的「心靈避難所」。
+
+**2. 產品形態：極致隱形美學**
+
+- 無線分體架構：主機隱藏天花，旋鈕 wireless
+- The One Knob：無屏幕、無按鍵、無文字
+- 盲操作、濕手適用
+
+**3. 雙模式架構**
+
+- Mode A：藍牙保險網（100% 穩定，斷網可用）
+- Mode B：AI 靈魂伴侶（幸福感內容，本地部署）
+
+**4. 商業價值**
+
+- 全港首創身心靈豪宅賣點
+- 聯乘名人專屬內容
+- 提升 ESG 形象
+- 一次性買斷，無月費
+
+---
+
+*本文件為 AI Soulmate 項目的核心會議紀錄，如有更新請告知大波蓮。*
